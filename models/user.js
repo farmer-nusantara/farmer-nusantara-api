@@ -30,4 +30,23 @@ const userSchema = new Schema({
     }
 });
 
-exports.userModel = mongoose.model("Users", userSchema);
+const secretCode = new Schema({
+    email: {
+        type: String,
+        required: true,
+    },
+    code: {
+        type: String,
+        required: true,
+    },
+    dateCreated: {
+        type: Date,
+        default: Date.now(),
+        expires: 600,
+    },
+});
+
+const userModel = mongoose.model("Users", userSchema);
+const secretCodeModel = mongoose.model("SecretCodes", secretCode);
+
+module.exports = { userModel, secretCodeModel };
