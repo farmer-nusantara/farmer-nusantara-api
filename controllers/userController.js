@@ -1,9 +1,26 @@
 const userModel = require('../models/userModel');
-const { body } = require("express-validator");
+const { body, validationResult } = require("express-validator");
 
 module.exports = {
-    signUp: (req, res, next) => {
-        const { email, firstName, lastName, password, passwordConfirmation } = req.body;
+    signUp: async (req, res, next) => {
+        try {
+            const errors = validationResult(req);
+
+            if (!errors.isEmpty()) {
+                res.status.json({ errors: errors.array() });
+                return;
+            }
+            const { email, firstName, lastName, password } = req.body;
+
+            const user = await userModel.create({
+                email,
+                firstName,
+                lastName,
+                password
+            })
+        }catch (e) {
+
+        }
     },
     validates: (method) => {
         switch (method) {
@@ -25,7 +42,15 @@ module.exports = {
                         return true;
                     }),
                     body('firstName').exists().notEmpty().trim(),
-                    body('lastName').exists().notEmpty().trim(),
+                    body('lastName').exists().trim(),
+                    body('phone').exists().notEmpty().isNumeric().custom(value => {
+                        return userModel.findOne({ 'phone': value }).then(user => {
+                            if (user) {
+                                return Promise.reject('Phone is already used');
+                            }
+                        })
+                    }),
+                    body('birth').exists().notEmpty(),
                 ]
             }
         }

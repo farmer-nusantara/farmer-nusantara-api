@@ -20,9 +20,11 @@ const userSchema = new Schema({
     },
     phone: {
         type: Number,
+        required: true,
     },
     birth: {
         type: Date,
+        required: true,
     },
     status: {
         type: String,
