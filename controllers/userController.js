@@ -1,5 +1,6 @@
 const userModel = require('../models/userModel');
 const { body, validationResult } = require("express-validator");
+const bcrypt = require('bcryptjs');
 
 module.exports = {
     signUp: async (req, res, next) => {
@@ -12,14 +13,19 @@ module.exports = {
             }
             const { email, firstName, lastName, password } = req.body;
 
+            const salt = bcrypt.genSaltSync(10);
+            const hashPassword = bcrypt.hashSync(password, salt);
+
             const user = await userModel.create({
                 email,
                 firstName,
                 lastName,
-                password
+                hashPassword
             })
-        }catch (e) {
 
+            return res.json(user);
+        }catch (err) {
+            return next(err);
         }
     },
     validates: (method) => {
