@@ -1,6 +1,7 @@
-const userModel = require('../models/userModel');
+const { userModel, secretCodeModel } = require('../models/userModel');
 const { body, validationResult } = require("express-validator");
 const bcrypt = require('bcryptjs');
+const generateString = require('../utils/generateString');
 
 module.exports = {
     signUp: async (req, res, next) => {
@@ -23,7 +24,16 @@ module.exports = {
                 hashPassword
             })
 
-            return res.json(user);
+            const code = generateString(7);
+            const secretCode = await secretCodeModel.create({
+                email,
+                code,
+            })
+
+            const userJson = res.json(user);
+            const secretCodeJson = res.json(secretCode);
+
+            return { user: userJson, secretCode: secretCodeJson }
         }catch (err) {
             return next(err);
         }
