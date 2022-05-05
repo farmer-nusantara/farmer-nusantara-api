@@ -8,6 +8,7 @@ require('dotenv').config();
 var apiRouter = require('./routes/api');
 var app = express();
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const { NODE_ENV, MONGO_DEV_URI, MONGO_PROD_URI } = process.env;
 mongoose.connect(NODE_ENV !== "development" ? MONGO_PROD_URI : MONGO_DEV_URI, {
@@ -19,11 +20,11 @@ mongoose.connect(NODE_ENV !== "development" ? MONGO_PROD_URI : MONGO_DEV_URI, {
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.json());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', apiRouter);
