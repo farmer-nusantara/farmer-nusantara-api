@@ -64,10 +64,14 @@
 # Farmlands
 // container of farm
 {
-    name: {
+    nameLand: {
         type: String,
         required: true,
         unique: true,
+    },
+    owner: {
+        type: String,
+        required: true,
     },
     markColor: {
         type: String,
@@ -84,10 +88,10 @@
     },
     location: {
         type: String,
-    }
+    },
 }
 
-# sickPlants
+# SickPlants
 {
     farmland: {
        type: String, //referenced to farmland id
