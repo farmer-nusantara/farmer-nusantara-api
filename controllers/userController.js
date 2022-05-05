@@ -30,12 +30,9 @@ module.exports = {
                 code,
             })
 
-            const userJson = res.json(user);
-            const secretCodeJson = res.json(secretCode);
-
-            return { user: userJson, secretCode: secretCodeJson }
+            return res.status(200).json({ user, secretCode });
         }catch (err) {
-            return next(err);
+            return res.status(400).json({ message: err.message })
         }
     },
     validates: (method) => {
