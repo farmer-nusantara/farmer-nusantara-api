@@ -1,0 +1,105 @@
+# User
+{
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
+        type: String,
+    },
+    phone: {
+        type: Number,
+        required: true,
+    },
+    birth: {
+        type: Date,
+        required: true,
+    },
+    status: {
+        type: String,
+        enum: ['active', 'pending'],
+        default: 'pending',
+    }
+}
+
+# SecretCodes
+// this for activation account
+{
+    email: {
+        type: String,
+        required: true,
+    },
+    code: {
+        type: String,
+        required: true,
+    },
+    dateCreated: {
+        type: Date,
+        default: Date.now(),
+        expires: 600,
+    },
+}
+
+# PlantScans
+// This collection list of plant already scan features
+// admin can add or remove one of list plant features below
+{
+    name {
+        type: String,
+        required: true,
+        enum: ['active', 'maintenance'],
+        default: 'active',
+    },
+}
+
+# Farmlands
+// container of farm
+{
+    name: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    markColor: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    plantType: {
+        type: String,
+        required: true,
+    },
+    numberPlants: {
+        type: Number,
+        required: true,
+    },
+    location: {
+        type: String,
+    }
+}
+
+# sickPlants
+{
+    farmland: {
+       type: String, //referenced to farmland id
+       required: true,
+    },
+    coordinate: {
+        type: String,
+    },
+    diseasePlant: {
+        type: String,
+    },
+    imageUrl: {
+        type: String,
+    },
+}
