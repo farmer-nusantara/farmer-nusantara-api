@@ -52,6 +52,27 @@ module.exports = {
             return res.status(400).json({ message: err.message });
         }
     },
+    emailRevalidation: async (req, res, next) => {
+        try {
+            const { email } = req.body;
+
+            const user = await userModel.findOne({ email });
+
+            if (!user) {
+                return res.status(404).json({ message: 'E-mail not registered' })
+            }
+
+            const code = generateString(7);
+            const secretCode = await secretCodeModel.create({
+                email,
+                code,
+            })
+
+            return res.status(200).json({ secretCode });
+        } catch (error) {
+            return res.status(400).json({ message: err.message });
+        }
+    },
     validates: (method) => {
         switch (method) {
             case "signUp": {
@@ -117,6 +138,18 @@ module.exports = {
                         .exists()
                         .notEmpty()
                         .withMessage('Birth is required'),
+                ];
+            }
+            case "emailRevalidation": {
+                return [
+                    check('email')
+                        .exists()
+                        .withMessage('Email is required')
+                        .notEmpty()
+                        .trim()
+                        .withMessage('Email not null & not whitespace')
+                        .isEmail()
+                        .withMessage('Email not valid')
                 ]
             }
         }
