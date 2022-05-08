@@ -26,11 +26,15 @@ module.exports = {
                 phone
             })
 
-            const code = generateString(7);
-            const secretCode = await secretCodeModel.create({
-                email,
-                code,
-            })
+            let secretCode;
+            if (user) {
+                const code = generateString(7);
+                secretCode = await secretCodeModel.create({
+                    email,
+                    code,
+                })
+            }
+
 
             return res.status(200).json({ user, secretCode });
         }catch (err) {
@@ -113,12 +117,6 @@ module.exports = {
                         .notEmpty()
                         .trim()
                         .withMessage('firstName not null & not whitespace'),
-                    check('lastName')
-                        .exists()
-                        .withMessage('lastName is required')
-                        .notEmpty()
-                        .trim()
-                        .withMessage('lastName not null & not whitespace'),
                     check('phone')
                         .exists()
                         .notEmpty()
