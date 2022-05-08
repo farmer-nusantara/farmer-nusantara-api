@@ -17,20 +17,22 @@ const userSchema = new Schema({
     },
     lastName: {
         type: String,
+        default: null,
     },
     phone: {
-        type: Number,
+        type: String,
         required: true,
     },
     birth: {
-        type: Date,
+        type: String,
         required: true,
     },
     status: {
         type: String,
+        enum: ['active', 'pending'],
         default: "pending",
     }
-});
+}, { timestamps: true });
 
 const secretCode = new Schema({
     email: {
