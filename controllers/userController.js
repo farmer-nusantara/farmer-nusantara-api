@@ -28,15 +28,16 @@ module.exports = {
 
             let secretCode;
             if (user) {
-                const code = generateString(7);
+                const code = generateString(7).trim();
                 secretCode = await secretCodeModel.create({
                     email,
                     code,
                 })
             }
 
+            const resJson = { message: "Successfully", data: { userId: user._id, secretCode: secretCode.code }}
 
-            return res.status(200).json({ user, secretCode });
+            return res.status(201).json(resJson);
         }catch (err) {
             return res.status(400).json({ message: err.message });
         }
@@ -48,10 +49,19 @@ module.exports = {
             const checkCode = await secretCodeModel.findOne({ code: secretCode });
 
             if (checkCode) {
-                const user = await userModel.findOneAndUpdate({ _id: userId }, { status: 'active' });
-                return res.status(201).json(user);
-            }
+                const user = await userModel.findOne({ _id: userId });
 
+                if (user.status !== "pending") {
+                    return res.status(422).json({ message: "User already actived" });
+                }
+                
+                user.status = "active";
+                user.save();
+
+                return res.status(200).json({ message: "Successfully", data: { id: user.id, status: user.status } });
+            }
+            
+            return res.status(404).json({ message: 'Token expired' });
         } catch (err) {
             return res.status(400).json({ message: err.message });
         }
