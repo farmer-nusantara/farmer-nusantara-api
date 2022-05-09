@@ -79,11 +79,17 @@ module.exports = {
                 return res.status(404).json({ message: 'E-mail not registered' })
             }
 
+            if (user.status === "active") {
+                return res.json({ message: "Account is already actived" })
+            }
+
             const code = generateString(7);
             const secretCode = await secretCodeModel.create({
                 email,
                 code,
             })
+
+            sendMailActivation(user.email, `http://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}/api/auth/email-confirm/${user._id}/${secretCode.code}`);
 
             return res.status(200).json({ secretCode });
         } catch (error) {
