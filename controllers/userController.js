@@ -2,6 +2,7 @@ const { userModel, secretCodeModel } = require('../models/userModel');
 const { validationResult, check } = require("express-validator");
 const bcrypt = require('bcryptjs');
 const generateString = require('../utils/generateString');
+const { sendMailActivation } = require('../utils/sendMail');
 
 module.exports = {
     signUp: async (req, res, next) => {
@@ -32,8 +33,10 @@ module.exports = {
                 secretCode = await secretCodeModel.create({
                     email,
                     code,
-                })
+                });
             }
+
+            sendMailActivation(user.email, `http://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}/api/auth/email-confirm/${user._id}/${secretCode.code}`);
 
             const resJson = { message: "Successfully", data: { userId: user._id, secretCode: secretCode.code }}
 
