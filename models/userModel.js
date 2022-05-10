@@ -42,6 +42,7 @@ const secretCode = new Schema({
     code: {
         type: String,
         required: true,
+        unique: true,
     },
     dateCreated: {
         type: Date,

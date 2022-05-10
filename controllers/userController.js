@@ -28,32 +28,22 @@ module.exports = {
                 phone
             })
 
-            let secretCode;
-            if (user) {
-                const code = generateString(7).trim();
-                secretCode = await secretCodeModel.create({
-                    email,
-                    code,
-                });
-            }
 
-            sendMailActivation(user.email, `http://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}/api/auth/email-confirm/${user._id}/${secretCode.code}`);
-
-            const resJson = { message: "Successfully", data: { userId: user._id, secretCode: secretCode.code }}
+            const resJson = { message: "Successfully", data: { userId: user._id }}
 
             return res.status(201).json(resJson);
         }catch (err) {
             return res.status(400).json({ message: err.message });
         }
     },
-    emailValidation: async (req, res, next) => {
+    changeStatusAccount: async (req, res, next) => {
         try {
-            const { userId, secretCode } = req.params;
+            const { secretCode } = req.body;
 
-            const checkCode = await secretCodeModel.findOne({ code: secretCode });
+            const code = await secretCodeModel.findOne({ code: secretCode });
 
-            if (checkCode) {
-                const user = await userModel.findOne({ _id: userId });
+            if (code) {
+                const user = await userModel.findOne({ email: code.email });
 
                 if (user.status !== "pending") {
                     return res.status(422).json({ message: "User already actived" });
@@ -70,7 +60,7 @@ module.exports = {
             return res.status(400).json({ message: err.message });
         }
     },
-    emailRevalidation: async (req, res, next) => {
+    sendTokenActivationAccount: async (req, res, next) => {
         try {
             const { email } = req.body;
 
@@ -84,13 +74,13 @@ module.exports = {
                 return res.json({ message: "Account is already actived" })
             }
 
-            const code = generateString(7);
+            const code = generateNumber(5);
             const secretCode = await secretCodeModel.create({
                 email,
                 code,
-            })
+            });
 
-            sendMailActivation(user.email, `http://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}/api/auth/email-confirm/${user._id}/${secretCode.code}`);
+            sendMailActivation(user.email, secretCode.code);
 
             return res.status(200).json({ secretCode });
         } catch (error) {
@@ -199,7 +189,7 @@ module.exports = {
                         .withMessage('Birth is required'),
                 ];
             }
-            case "emailRevalidation": {
+            case "sendTokenActivationAccount": {
                 return [
                     check('email')
                         .exists()

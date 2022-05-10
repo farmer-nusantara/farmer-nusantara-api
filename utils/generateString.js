@@ -2,7 +2,7 @@ const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345678
 const numbers = '0123456789';
 
 function generateString(length) {
-    let result = ' ';
+    let result = '';
     const charactersLength = characters.length;
     for ( let i = 0; i < length; i++ ) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -12,7 +12,7 @@ function generateString(length) {
 }
 
 function generateNumber(length) {
-    let result = ' ';
+    let result = '';
     const numberLength = numbers.length;
     for ( let i = 0; i < length; i++ ) {
         result += numbers.charAt(Math.floor(Math.random() * numberLength));
