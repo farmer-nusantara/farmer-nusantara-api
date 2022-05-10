@@ -1,8 +1,8 @@
 const { userModel, secretCodeModel } = require('../models/userModel');
 const { validationResult, check } = require("express-validator");
 const bcrypt = require('bcryptjs');
-const generateString = require('../utils/generateString');
-const { sendMailActivation } = require('../utils/sendMail');
+const { generateString, generateNumber } = require('../utils/generateString');
+const { sendMailActivation, sendMailCodeResetPassword } = require('../utils/sendMail');
 const jwt = require('jsonwebtoken');
 
 module.exports = {
@@ -109,10 +109,31 @@ module.exports = {
                     email,
                 }, process.env.TOKEN_SECRET, { expiresIn: "2h" })
 
-                return res.status(200).json({ user, token, message: "Login successfull" });
+                return res.status(200).json({ user, token, message: "Login successfully" });
             }
 
             return res.status(400).send("Email or Password was is wrong");
+        } catch (error) {
+            return res.status(400).json({ message: err.message });
+        }
+    },
+    sendCodeResetPassword: async (req, res, next) => {
+        try {
+            const { email } = req.body;
+
+            const user = await userModel.findOne({ email });
+
+            if (!user) return res.status(404).send("Email not registered");
+
+            const tokenResetPassword = generateNumber(5);
+
+            const code = await secretCodeModel.create({
+                email: user.email,
+                code,
+            });
+            sendMailCodeResetPassword(user.email, tokenResetPassword);
+
+            return res.status(200).json({ message: 'Send Token reset Successfully' });
         } catch (error) {
             return res.status(400).json({ message: err.message });
         }
@@ -170,7 +191,7 @@ module.exports = {
                             if (user) {
                                 return Promise.reject('Phone is already case');
                             }
-                        })
+                        });
                     }),
                     check('birth')
                         .exists()
@@ -207,6 +228,18 @@ module.exports = {
                         .trim()
                         .withMessage('Email not null & not whitespace')
                 ];
+            }
+            case "resetPassword": {
+                return [
+                    check('email')
+                        .exists()
+                        .withMessage('Email is required')
+                        .notEmpty()
+                        .trim()
+                        .withMessage('Email not null & not whitespace')
+                        .isEmail()
+                        .withMessage('Email not valid'),
+                ]
             }
         }
     }
