@@ -3,6 +3,7 @@ const { validationResult, check } = require("express-validator");
 const bcrypt = require('bcryptjs');
 const generateString = require('../utils/generateString');
 const { sendMailActivation } = require('../utils/sendMail');
+const jwt = require('jsonwebtoken');
 
 module.exports = {
     signUp: async (req, res, next) => {
@@ -19,7 +20,7 @@ module.exports = {
             const hashPassword = bcrypt.hashSync(password, salt);
 
             const user = await userModel.create({
-                email,
+                email: email.toLowerCase(),
                 firstName,
                 lastName,
                 password: hashPassword,
@@ -96,6 +97,26 @@ module.exports = {
             return res.status(400).json({ message: err.message });
         }
     },
+    signIn: async (req, res, next) => {
+        try {
+            const { email, password } = req.body;
+
+            const user = await userModel.findOne({ email });
+
+            if (user && (await bcrypt.compare(password, user.password))) {
+                const token = jwt.sign({
+                    user_id: user._id,
+                    email,
+                }, process.env.TOKEN_SECRET, { expiresIn: "2h" })
+
+                return res.status(200).json({ user, token, message: "Login successfull" });
+            }
+
+            return res.status(400).send("Email or Password was is wrong");
+        } catch (error) {
+            return res.status(400).json({ message: err.message });
+        }
+    },
     validates: (method) => {
         switch (method) {
             case "signUp": {
@@ -168,6 +189,24 @@ module.exports = {
                         .isEmail()
                         .withMessage('Email not valid')
                 ]
+            }
+            case "signIn": {
+                return [
+                    check('email')
+                        .exists()
+                        .withMessage('Email is required')
+                        .notEmpty()
+                        .trim()
+                        .withMessage('Email not null & not whitespace')
+                        .isEmail()
+                        .withMessage('Email not valid'),
+                    check('password')
+                        .exists()
+                        .withMessage('Password is required')
+                        .notEmpty()
+                        .trim()
+                        .withMessage('Email not null & not whitespace')
+                ];
             }
         }
     }
