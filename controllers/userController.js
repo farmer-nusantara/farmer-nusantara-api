@@ -117,13 +117,40 @@ module.exports = {
 
             const tokenResetPassword = generateNumber(5);
 
-            const code = await secretCodeModel.create({
+            const secretCode = await secretCodeModel.create({
                 email: user.email,
-                code,
+                code: tokenResetPassword,
             });
             sendMailCodeResetPassword(user.email, tokenResetPassword);
 
-            return res.status(200).json({ message: 'Send Token reset Successfully' });
+            return res.status(200).json({ message: 'Send Token reset Successfully', data: { secretCode: secretCode.code } });
+        } catch (error) {
+            return res.status(400).json({ message: error.message });
+        }
+    },
+    checkSecretCodeforResetPassword: async (req, res, next) => {
+        const { secretCode } = req.body;
+
+            const code = await secretCodeModel.findOne({ code: secretCode });
+
+            if (code) {
+                const user = await userModel.findOne({ email: code.email });
+
+                return res.status(200).json({ message: "Successfully", data: { email: user.email }});
+            }
+            
+            return res.status(404).json({ message: 'Token expired' });
+    },
+    changePasswordAccount: async (req, res, next) => {
+        try {
+            const { email, newPassword } = req.body;
+
+            const salt = bcrypt.genSaltSync(10);
+            const hashPassword = bcrypt.hashSync(newPassword, salt);
+
+            const user = await userModel.findOneAndUpdate({ email }, { password: hashPassword });
+
+            return res.status(200).json({ message: "Changed password is successfully" });
         } catch (error) {
             return res.status(400).json({ message: err.message });
         }
@@ -229,6 +256,21 @@ module.exports = {
                         .withMessage('Email not null & not whitespace')
                         .isEmail()
                         .withMessage('Email not valid'),
+                    check('password')
+                        .exists()
+                        .withMessage('Password is required')
+                        .isLength({ min: 8 })
+                        .withMessage('Password min 8 length'),
+                    check('passwordConfirmation')
+                        .exists()
+                        .withMessage('Password Confirmation is required')
+                        .custom((value, { req }) => {
+                        if (value !== req.body.password) {
+                            throw new Error('Password confirmation does not match password');
+                        }
+
+                            return true;
+                        }),
                 ]
             }
         }
