@@ -12,7 +12,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const { NODE_ENV, MONGO_DEV_URI, MONGO_PROD_URI } = process.env;
-mongoose.connect(NODE_ENV !== "development" ? MONGO_PROD_URI : MONGO_DEV_URI, {
+mongoose.connect(process.env.MONGO_PROD_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => console.log("Database connected!"))
