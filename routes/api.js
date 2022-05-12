@@ -10,5 +10,6 @@ router.post('/auth/signin', userController.validates('signIn'), userController.s
 router.post('/auth/email-token-reset', userController.validates('sendTokenActivationAccount'), userController.sendCodeResetPassword);
 router.post('/auth/check-token-reset', userController.checkSecretCodeforResetPassword);
 router.post('/auth/change-password', userController.validates('resetPassword'), userController.changePasswordAccount)
+router.get('/auth/user/:userId', auth, userController.getDetailUser);
 
 module.exports = router;

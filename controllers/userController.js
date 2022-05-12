@@ -6,6 +6,21 @@ const { sendMailActivation, sendMailCodeResetPassword } = require('../utils/send
 const jwt = require('jsonwebtoken');
 
 module.exports = {
+    getDetailUser: async (req, res, next) => {
+        try {
+            const { userId } = req.params;
+
+            console.log(userId)
+
+            const user = await userModel.findOne({ _id: userId });
+
+            if (!user) return res.status(404).json({ message: "User not found" });
+
+            return res.status(200).json(user);
+        } catch (error) {
+            return res.status(400).json({ message: err.message });
+        }
+    },
     signUp: async (req, res, next) => {
         try {
             const errors = validationResult(req);
