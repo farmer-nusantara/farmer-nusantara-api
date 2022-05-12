@@ -29,17 +29,15 @@ module.exports = {
                 res.status(422).json({ errors: errors.array() });
                 return;
             }
-            const { email, firstName, lastName, password, birth, phone } = req.body;
+            const { email, name, password, phone } = req.body;
 
             const salt = bcrypt.genSaltSync(10);
             const hashPassword = bcrypt.hashSync(password, salt);
 
             const user = await userModel.create({
                 email: email.toLowerCase(),
-                firstName,
-                lastName,
+                name,
                 password: hashPassword,
-                birth,
                 phone
             })
 
@@ -204,12 +202,12 @@ module.exports = {
 
                             return true;
                         }),
-                    check('firstName')
+                    check('name')
                         .exists()
-                        .withMessage('firstName is required')
+                        .withMessage('name is required')
                         .notEmpty()
                         .trim()
-                        .withMessage('firstName not null & not whitespace'),
+                        .withMessage('name not null & not whitespace'),
                     check('phone')
                         .exists()
                         .notEmpty()
@@ -225,10 +223,7 @@ module.exports = {
                             }
                         });
                     }),
-                    check('birth')
-                        .exists()
-                        .notEmpty()
-                        .withMessage('Birth is required'),
+
                 ];
             }
             case "sendTokenActivationAccount": {
