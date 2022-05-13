@@ -24,7 +24,7 @@ const userSchema = new Schema({
         enum: ['active', 'pending'],
         default: "pending",
     }
-}, { timestamps: true });
+});
 
 const secretCode = new Schema({
     email: {

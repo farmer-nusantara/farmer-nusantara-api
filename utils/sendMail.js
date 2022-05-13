@@ -1,20 +1,29 @@
 const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
+const OAuth2 = google.auth.OAuth2;
+const { EMAIL_USER, EMAIL_PASS, EMAIL_HOST, CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN, CLIENT_USER } = process.env;
 
-const { EMAIL_USER, EMAIL_PASS, EMAIL_HOST } = process.env;
+const OAuth2Client = new OAuth2(CLIENT_ID, CLIENT_SECRET);
+OAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 module.exports = {
   sendMailActivation: async (receiverEmail, codeActivation) => {
     try {
+      const accessToken = OAuth2Client.getAccessToken();
       let transporter = nodemailer.createTransport({
-        host: EMAIL_HOST,
+        service: 'gmail',
         auth: {
-            user: EMAIL_USER,
-            pass: EMAIL_PASS
+          type: 'OAuth2',
+          user: CLIENT_USER,
+          clientId: CLIENT_ID,
+          clientSecret: CLIENT_SECRET,
+          refreshToken: REFRESH_TOKEN,
+          accessToken,
         }
       });
 
       let info = await transporter.sendMail({
-        from: EMAIL_USER,
+        from: `Farmer Nusantara <${CLIENT_USER}>`,
         to: receiverEmail,
         subject: "Activation Farmer Account",
         html: `
@@ -39,24 +48,28 @@ module.exports = {
         `,
       });
 
-      console.log("Message sent: %s", info.messageId);
-      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+      console.log(info);
     } catch (error) {
       console.error(error)
     }
   },
   sendMailCodeResetPassword: async (receiverEmail, codeResetPassword) => {
     try {
+      const accessToken = OAuth2Client.getAccessToken();
       let transporter = nodemailer.createTransport({
-        host: EMAIL_HOST,
+        service: 'gmail',
         auth: {
-            user: EMAIL_USER,
-            pass: EMAIL_PASS
+          type: 'OAuth2',
+          user: CLIENT_USER,
+          clientId: CLIENT_ID,
+          clientSecret: CLIENT_SECRET,
+          refreshToken: REFRESH_TOKEN,
+          accessToken,
         }
       });
 
       let info = await transporter.sendMail({
-        from: EMAIL_USER,
+        from: `Farmer Nusantara <${CLIENT_USER}>`,
         to: receiverEmail,
         subject: "Token Code for reset password account",
         html: `
@@ -78,8 +91,7 @@ module.exports = {
         `,
       });
 
-      console.log("Message sent: %s", info.messageId);
-      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+      console.log(info);
     } catch (error) {
       console.error(error);
     }
