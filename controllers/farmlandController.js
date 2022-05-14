@@ -4,7 +4,7 @@ const { check } = require('express-validator');
 module.exports = {
   createFarmland: async (req, res, next) => {
     try {
-      const { farmName, owner, markColor, plantType, location } = req.body;
+      const { farmName, owner, markColor, plantType, location, farmCover } = req.body;
 
       const farmland = await farmlandModel.create({
         farmName,
@@ -12,11 +12,12 @@ module.exports = {
         markColor,
         plantType,
         location,
-      })
+        farmCover,
+      });
 
-      return res.status(201).json({ farmland });
+      return res.status(201).json(farmland);
     } catch (error) {
-      return res.status(400).json({ message: err.message });
+      return res.status(400).json({ message: error.message });
     }
   },
   validates: (method) => {
@@ -68,6 +69,13 @@ module.exports = {
           check('location')
             .exists()
             .withMessage("Location is required"),
+          check('farmCover')
+            .custom(value => {
+              return farmlandModel.find({ farmCover: value })
+                .then(farmland => {
+                  if (farmland) return Promise.reject('farmCover name is already in used')
+                })
+            })
         ]
       }
     }
