@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('dotenv').config();
+const multer = require('multer')
 
 var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api');
@@ -18,10 +19,18 @@ mongoose.connect(process.env.MONGO_PROD_URI, {
 }).then(() => console.log("Database connected!"))
     .catch(err => console.log(err));
 
+const multerMid = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+  fileSize: 5 * 1024 * 1024,
+  },
+})
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(multerMid.single('file'))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

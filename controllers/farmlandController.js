@@ -3,6 +3,7 @@ const { check } = require('express-validator');
 const multer = require('multer');
 const util = require('util');
 const path = require('path');
+const uploadImage = require('../utils/uploadImage');
 
 function checkFileType(file, cb) {
 	// Allowed ext
@@ -39,38 +40,15 @@ module.exports = {
     }
   },
   uploadFarmCover: async (req, res, next) => {
-    const { userId } = req.params;
-
-    const storage = multer.diskStorage({
-      destination: (req, file, cb) => {
-        cb(null, "temp/");
-      },
-      filename: (req, file, cb) => {
-        cb(null, userId + '-' + Date.now() + path.extname(file.originalname).toLowerCase());
-      },
-    });
-
-    const upload = multer({
-      storage: storage,
-      limits: { fileSize: 2000000 },
-      fileFilter: function (req, file, cb) {
-        checkFileType(file, cb);
-      },
-    }).single("image");
-
-    let uploadFile = util.promisify(upload);
-
     try {
-      await uploadFile(req, res);
-      if (req.file == undefined) {
-        return res.status(400).send({ message: "Please upload a file!" });
-      }
+      const { userId } = req.params;
+      const image = req.file;
+      const imageUrl = await uploadImage(image, userId);
 
       res.status(200).json({
-        message: "Uploaded the file successfully",
-        filename: req.file.filename,
-      });
-
+        message: "Upload was successful",
+        imageUrl
+      })
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
