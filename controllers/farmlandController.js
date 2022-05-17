@@ -22,6 +22,18 @@ module.exports = {
       return res.status(400).json({ message: error.message });
     }
   },
+  showFarmlandById: async (req, res, next) => {
+    try {
+      const { farmlandId } = req.params;
+      
+      const farmland = await farmlandModel.findById(farmlandId);
+      if (!farmland) return res.status(404).send('farmland not found');
+
+      return res.status(200).json(farmland);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
   uploadImageToStorage: async (req, res, next) => {
     try {
       const { userId } = req.params;

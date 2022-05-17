@@ -14,6 +14,7 @@ router.put('/auth/change-password', userController.validates('resetPassword'), u
 router.get('/auth/user/:userId', auth, userController.getDetailUser);
 
 router.post('/farmland', auth, farmlandController.validates('createFamland'), farmlandController.createFarmland);
+router.get('/farmland/:farmlandId', auth, farmlandController.showFarmlandById);
 router.put('/farmland/:farmlandId', auth, farmlandController.validates('createFamland'), farmlandController.updateFarmland);
 router.delete('/farmland/:farmlandId', auth, farmlandController.removeFarmland);
 
