@@ -22,4 +22,17 @@ const uploadImage = (file, userId = Math.random(), forDo = 'other' ) => new Prom
   .end(buffer);
 });
 
-module.exports = uploadImage;
+const removeImage = async (imageUrl) => {
+  try {
+    const splitString = imageUrl.split('/');
+    const filename = splitString.at(-1);
+    const res = await bucket.file(filename).delete();
+    
+    if (!res) return false
+    return true;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+module.exports = { uploadImage, removeImage };

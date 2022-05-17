@@ -1,7 +1,7 @@
 const farmlandModel = require('../models/farmlandModel');
 const { check } = require('express-validator');
 const util = require('util');
-const uploadImage = require('../utils/uploadImage');
+const { uploadImage, removeImage } = require('../utils/uploadImage');
 
 module.exports = {
   createFarmland: async (req, res, next) => {
@@ -22,7 +22,7 @@ module.exports = {
       return res.status(400).json({ message: error.message });
     }
   },
-  uploadFarmCover: async (req, res, next) => {
+  uploadImageToStorage: async (req, res, next) => {
     try {
       const { userId } = req.params;
       const image = req.file;
@@ -32,6 +32,21 @@ module.exports = {
         message: "Upload was successful",
         imageUrl
       })
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+  removeImageFromStorage: async (req, res, next) => {
+    try {
+      const { imageUrl } = req.body;
+
+      if (!imageUrl) return res.status(422).send('Should have image url for delete image');
+
+      const image = await removeImage(imageUrl);
+      
+      if (!image) return res.status(404).json({ message: 'Delete was failed' });
+
+      return res.status(200).json({ message: 'Delete was successfully' });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
