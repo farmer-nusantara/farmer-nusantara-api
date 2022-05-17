@@ -23,10 +23,9 @@ const farmlandSchema = new Schema({
   location: {
     type: String,
   },
-  farmCover: {
+  imageUrl: {
     type: String,
     default: null,
-    unique: true,
   }
 })
 

@@ -23,7 +23,7 @@ function checkFileType(file, cb) {
 module.exports = {
   createFarmland: async (req, res, next) => {
     try {
-      const { farmName, owner, markColor, plantType, location, farmCover } = req.body;
+      const { farmName, owner, markColor, plantType, location, imageUrl } = req.body;
 
       const farmland = await farmlandModel.create({
         farmName,
@@ -31,7 +31,7 @@ module.exports = {
         markColor,
         plantType,
         location,
-        farmCover,
+        imageUrl,
       });
 
       return res.status(201).json(farmland);
@@ -43,7 +43,7 @@ module.exports = {
     try {
       const { userId } = req.params;
       const image = req.file;
-      const imageUrl = await uploadImage(image, userId);
+      const imageUrl = await uploadImage(image, userId, 'farmcover');
 
       res.status(200).json({
         message: "Upload was successful",
