@@ -15,6 +15,7 @@ router.get('/auth/user/:userId', auth, userController.getDetailUser);
 
 router.post('/farmland', auth, farmlandController.validates('createFamland'), farmlandController.createFarmland);
 router.get('/farmland/:farmlandId', auth, farmlandController.showFarmlandById);
+router.get('/farmland', auth, farmlandController.showAllFarmlandByOwner);
 router.put('/farmland/:farmlandId', auth, farmlandController.validates('createFamland'), farmlandController.updateFarmland);
 router.delete('/farmland/:farmlandId', auth, farmlandController.removeFarmland);
 

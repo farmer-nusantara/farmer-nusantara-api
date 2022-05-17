@@ -39,7 +39,7 @@ const secretCode = new Schema({
     dateCreated: {
         type: Date,
         default: Date.now(),
-        expires: 180,
+        expires: '5m',
     },
 });
 

@@ -22,6 +22,19 @@ module.exports = {
       return res.status(400).json({ message: error.message });
     }
   },
+  showAllFarmlandByOwner: async (req, res, next) => {
+    try {
+      const { owner } = req.query;
+
+      if (!owner) return res.status(422).send('Mush have query owner');
+
+      const farmlands = await farmlandModel.find({ owner });
+
+      return res.status(200).json(farmlands);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
   showFarmlandById: async (req, res, next) => {
     try {
       const { farmlandId } = req.params;
