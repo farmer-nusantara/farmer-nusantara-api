@@ -56,7 +56,7 @@ module.exports = {
       const { farmlandId } = req.params;
       const { farmName, owner, markColor, plantType, location, imageUrl } = req.body;
 
-      if (!farmlandId) return res.status(422).send("Should have params famland id");
+      if (!farmlandId) return res.status(422).send("Should have params farmland id");
 
       const farmland = await farmlandModel.findByIdAndUpdate(farmlandId, {
         farmName,
@@ -70,6 +70,21 @@ module.exports = {
       if (!farmland) return res.status(404).send('Farmland Id not found');
 
       return res.status(201).json({ message: 'Farmland update was successfully' });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+  removeFarmland: async (req, res, next) => {
+    try {
+      const { farmlandId } = req.params;
+
+      if (!farmlandId) return res.status(422).send("Should have params farmland id");
+
+      const farmland = await farmlandModel.findByIdAndRemove(farmlandId);
+
+      if (!farmland) return res.status(404).send('Farmland not found');
+
+      return res.status(200).json({ message: 'Farmland delete was successfully' });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
