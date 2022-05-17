@@ -1,24 +1,7 @@
 const farmlandModel = require('../models/farmlandModel');
 const { check } = require('express-validator');
-const multer = require('multer');
 const util = require('util');
-const path = require('path');
 const uploadImage = require('../utils/uploadImage');
-
-function checkFileType(file, cb) {
-	// Allowed ext
-	const fileTypes = /jpeg|jpg|png|gif/;
-	// Check ext
-	const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
-	// Check mime
-	const mimeType = fileTypes.test(file.mimetype);
-
-	if (mimeType && extName) {
-		return cb(null, true);
-	} else {
-		cb("Error: Images Only !!!");
-	}
-}
 
 module.exports = {
   createFarmland: async (req, res, next) => {
@@ -49,6 +32,29 @@ module.exports = {
         message: "Upload was successful",
         imageUrl
       })
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+  updateFarmland: async (req, res, next) => {
+    try {
+      const { farmlandId } = req.params;
+      const { farmName, owner, markColor, plantType, location, imageUrl } = req.body;
+
+      if (!farmlandId) return res.status(422).send("Should have params famland id");
+
+      const farmland = await farmlandModel.findByIdAndUpdate(farmlandId, {
+        farmName,
+        owner,
+        markColor,
+        plantType,
+        location,
+        imageUrl,
+      });
+
+      if (!farmland) return res.status(404).send('Farmland Id not found');
+
+      return res.status(201).json({ message: 'Farmland update was successfully' });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
@@ -102,11 +108,11 @@ module.exports = {
           check('location')
             .exists()
             .withMessage("Location is required"),
-          check('farmCover')
+          check('imageUrl')
             .custom(value => {
               return farmlandModel.find({ farmCover: value })
                 .then(farmland => {
-                  if (farmland) return Promise.reject('farmCover name is already in used')
+                  if (farmland) return Promise.reject('imageUrl name is already in used')
                 })
             })
         ]

@@ -14,6 +14,7 @@ router.put('/auth/change-password', userController.validates('resetPassword'), u
 router.get('/auth/user/:userId', auth, userController.getDetailUser);
 
 router.post('/farmland', auth, farmlandController.validates('createFamland'), farmlandController.createFarmland);
-router.post('/farm-cover/uploads/:userId', auth, farmlandController.uploadFarmCover);
+router.put('/farmland/:userId', auth, farmlandController.validates('createFamland'), farmlandController.updateFarmland);
+router.post('/farm-cover/uploads/:farmlandId', auth, farmlandController.uploadFarmCover);
 
 module.exports = router;
