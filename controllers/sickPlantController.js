@@ -4,11 +4,10 @@ const { check } = require('express-validator');
 module.exports = {
   createSickPlant: async (req, res, next) => {
     try {
-      const { coordinate, diseasePlant, imageUrl, picturedBy } = req.body;
-      const { farmlandId } = req.params;
+      const { farmland_id, coordinate, diseasePlant, imageUrl, picturedBy } = req.body;
 
       const sickPlant = await sickPlantModel.create({
-        farmland_id: farmlandId,
+        farmland_id,
         coordinate,
         diseasePlant,
         imageUrl,
@@ -16,6 +15,19 @@ module.exports = {
       });
 
       return res.status(201).json({ message: 'Save sick plant was successfully', data: sickPlant });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+  getSickPlant: async (req, res, next) => {
+    try {
+      const { sickPlantId } = req.params;
+
+      const plant = await sickPlantModel.findById(sickPlantId);
+
+      if (!plant) return res.status(404).json({ message: 'Sick plant Id not found' });
+
+      return res.status(200).json(plant);
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }

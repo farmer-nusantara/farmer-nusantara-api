@@ -21,7 +21,8 @@ router.get('/farmland', auth, farmlandController.showAllFarmlandByOwner);
 router.put('/farmland/:farmlandId', auth, farmlandController.validates('createFamland'), farmlandController.updateFarmland);
 router.delete('/farmland/:farmlandId', auth, farmlandController.removeFarmland);
 
-router.post('/plants/:farmlandId', auth, sickPlantController.validates('createSickPlant'), sickPlantController.createSickPlant)
+router.post('/plants', auth, sickPlantController.validates('createSickPlant'), sickPlantController.createSickPlant)
+router.get('/plants/:sickPlantId', auth, sickPlantController.getSickPlant);
 
 router.post('/file/uploads/:userId', auth, farmlandController.uploadImageToStorage);
 router.delete('/file/uploads', auth, farmlandController.removeImageFromStorage);
