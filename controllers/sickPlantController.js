@@ -25,7 +25,7 @@ module.exports = {
 
       const plant = await sickPlantModel.findById(sickPlantId);
 
-      if (!plant) return res.status(404).json({ message: 'Sick plant Id not found' });
+      if (!plant) return res.status(404).json({ message: 'Sick plant not found' });
 
       return res.status(200).json(plant);
     } catch (error) {
@@ -43,6 +43,18 @@ module.exports = {
       if (!plants) return res.status(404).send("farmland_id not found");
 
       return res.status(200).json(plants);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+  removeSickPlant: async (req, res, next) => {
+    try {
+      const { sickPlantId } = req.params;
+
+      const plant = await sickPlantModel.findByIdAndDelete(sickPlantId);
+      if (!plant) return res.status(404).send('Sick plant not found');
+
+      return res.status(200).json({ message: 'Delete Sick plant was successfully' });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
