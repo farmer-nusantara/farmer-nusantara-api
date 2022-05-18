@@ -32,6 +32,21 @@ module.exports = {
       return res.status(400).json({ message: error.message });
     }
   },
+  getAllSickPlantsByFarmland: async (req, res, next) => {
+    try {
+      const { farmland_id } = req.query;
+
+      if (!farmland_id) return res.status(422).send('farmland id query is required');
+
+      const plants = await sickPlantModel.find({ farmland_id });
+
+      if (!plants) return res.status(404).send("farmland_id not found");
+
+      return res.status(200).json(plants);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
   validates: (method) => {
     switch (method) {
       case 'createSickPlant': {

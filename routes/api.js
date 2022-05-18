@@ -23,6 +23,7 @@ router.delete('/farmland/:farmlandId', auth, farmlandController.removeFarmland);
 
 router.post('/plants', auth, sickPlantController.validates('createSickPlant'), sickPlantController.createSickPlant)
 router.get('/plants/:sickPlantId', auth, sickPlantController.getSickPlant);
+router.get('/plants', auth, sickPlantController.getAllSickPlantsByFarmland);
 
 router.post('/file/uploads/:userId', auth, farmlandController.uploadImageToStorage);
 router.delete('/file/uploads', auth, farmlandController.removeImageFromStorage);
