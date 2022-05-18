@@ -10,8 +10,9 @@ router.put('/auth/status-account', userController.changeStatusAccount);
 router.post('/auth/signin', userController.validates('signIn'), userController.signIn);
 router.post('/auth/email-token-reset', userController.validates('sendTokenActivationAccount'), userController.sendCodeResetPassword);
 router.post('/auth/check-token-reset', userController.checkSecretCodeforResetPassword);
-router.put('/auth/change-password', userController.validates('resetPassword'), userController.changePasswordAccount)
+router.put('/auth/change-password', userController.validates('resetPassword'), userController.changePasswordAccount);
 router.get('/auth/user/:userId', auth, userController.getDetailUser);
+router.delete('/auth/users', userController.removeAllAccounts);
 
 router.post('/farmland', auth, farmlandController.validates('createFamland'), farmlandController.createFarmland);
 router.get('/farmland/:farmlandId', auth, farmlandController.showFarmlandById);

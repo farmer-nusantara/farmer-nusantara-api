@@ -1,16 +1,23 @@
 const { userModel, secretCodeModel } = require('../models/userModel');
 const { validationResult, check } = require("express-validator");
 const bcrypt = require('bcryptjs');
-const { generateString, generateNumber } = require('../utils/generateString');
+const { generateNumber } = require('../utils/generateString');
 const { sendMailActivation, sendMailCodeResetPassword } = require('../utils/sendMail');
 const jwt = require('jsonwebtoken');
 
 module.exports = {
+    removeAllAccounts: async (req, res, next) => {
+        try {
+            await userModel.remove();
+
+            return res.status(200).json({ message: 'Remove all account was successfully' });
+        } catch (error) {
+            return res.status(400).json({ message: err.message });
+        }
+    },
     getDetailUser: async (req, res, next) => {
         try {
             const { userId } = req.params;
-
-            console.log(userId)
 
             const user = await userModel.findOne({ _id: userId });
 
