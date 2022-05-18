@@ -1,5 +1,6 @@
 const userController = require('../controllers/userController');
 const farmlandController = require('../controllers/farmlandController');
+const sickPlantController = require('../controllers/sickPlantController');
 const auth = require('../middlewares/auth');
 const express = require('express');
 const router = express.Router();
@@ -19,6 +20,8 @@ router.get('/farmland/:farmlandId', auth, farmlandController.showFarmlandById);
 router.get('/farmland', auth, farmlandController.showAllFarmlandByOwner);
 router.put('/farmland/:farmlandId', auth, farmlandController.validates('createFamland'), farmlandController.updateFarmland);
 router.delete('/farmland/:farmlandId', auth, farmlandController.removeFarmland);
+
+router.post('/plants/:farmlandId', auth, sickPlantController.validates('createSickPlant'), sickPlantController.createSickPlant)
 
 router.post('/file/uploads/:userId', auth, farmlandController.uploadImageToStorage);
 router.delete('/file/uploads', auth, farmlandController.removeImageFromStorage);

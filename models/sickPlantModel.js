@@ -14,6 +14,13 @@ const sickPlantSchema = new Schema({
   },
   imageUrl: {
     type: String,
+  },
+  createdAt: {
+    type: String,
+    default: Date.now(),
+  },
+  picturedBy: {
+    type: String,
   }
 });
 

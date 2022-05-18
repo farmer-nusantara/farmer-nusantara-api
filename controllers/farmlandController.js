@@ -51,7 +51,7 @@ module.exports = {
     try {
       const { userId } = req.params;
       const image = req.file;
-      const imageUrl = await uploadImage(image, userId, 'farmcover');
+      const imageUrl = await uploadImage(image, userId);
 
       res.status(200).json({
         message: "Upload was successful",

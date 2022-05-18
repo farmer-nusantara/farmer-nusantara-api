@@ -4,13 +4,15 @@ const { check } = require('express-validator');
 module.exports = {
   createSickPlant: async (req, res, next) => {
     try {
-      const { farmland_id, coordinate, diseasePlant, imageUrl } = req.body;
+      const { coordinate, diseasePlant, imageUrl, picturedBy } = req.body;
+      const { farmlandId } = req.params;
 
       const sickPlant = await sickPlantModel.create({
-        farmland_id,
+        farmland_id: farmlandId,
         coordinate,
         diseasePlant,
-        imageUrl
+        imageUrl,
+        picturedBy
       });
 
       return res.status(201).json({ message: 'Save sick plant was successfully', data: sickPlant });
