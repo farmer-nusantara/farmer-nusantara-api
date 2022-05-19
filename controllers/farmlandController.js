@@ -2,6 +2,7 @@ const farmlandModel = require('../models/farmlandModel');
 const { check } = require('express-validator');
 const util = require('util');
 const { uploadImage, removeImage } = require('../utils/uploadImage');
+const sickPlantModel = require('../models/sickPlantModel');
 
 module.exports = {
   createFarmland: async (req, res, next) => {
@@ -111,6 +112,8 @@ module.exports = {
       const farmland = await farmlandModel.findByIdAndRemove(farmlandId);
 
       if (!farmland) return res.status(404).send('Farmland not found');
+
+      await sickPlantModel.find({ farmland_id: farmlandId }).remove();
 
       return res.status(200).json({ message: 'Farmland delete was successfully' });
     } catch (error) {
