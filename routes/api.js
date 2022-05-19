@@ -14,6 +14,7 @@ router.post('/auth/check-token-reset', userController.checkSecretCodeforResetPas
 router.put('/auth/change-password', userController.validates('resetPassword'), userController.changePasswordAccount);
 router.get('/auth/user/:userId', auth, userController.getDetailUser);
 router.delete('/auth/users', userController.removeAllAccounts);
+router.put('/auth/user/:userId', auth, userController.validates("editProfile"), userController.editProfile);
 
 router.post('/farmland', auth, farmlandController.validates('createFamland'), farmlandController.createFarmland);
 router.get('/farmland/:farmlandId', auth, farmlandController.showFarmlandById);

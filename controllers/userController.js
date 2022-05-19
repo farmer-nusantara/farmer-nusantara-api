@@ -28,6 +28,17 @@ module.exports = {
             return res.status(400).json({ message: err.message });
         }
     },
+    editProfile: async (req, res, next) => {
+        try {
+            const { name, phone } = req.body;
+            const { userId } = req.params;
+
+            await userModel.updateOne({ _id: userId }, { name, phone });
+            return res.status(200).json({ message: "Update profile was successfully" });
+        } catch (error) {
+            return res.status(400).json({ message: err.message });
+        }
+    },
     signUp: async (req, res, next) => {
         try {
             const errors = validationResult(req);
@@ -209,6 +220,32 @@ module.exports = {
 
                             return true;
                         }),
+                    check('name')
+                        .exists()
+                        .withMessage('name is required')
+                        .notEmpty()
+                        .trim()
+                        .withMessage('name not null & not whitespace'),
+                    check('phone')
+                        .exists()
+                        .notEmpty()
+                        .withMessage('Phone is required')
+                        .isNumeric()
+                        .withMessage('Phone is should Numeric')
+                        .isLength({ min: 10, max: 12 })
+                        .withMessage('Phone should have min 10 - 12 numbers length')
+                        .custom(value => {
+                        return userModel.findOne({ 'phone': value }).then(user => {
+                            if (user) {
+                                return Promise.reject('Phone is already case');
+                            }
+                        });
+                    }),
+
+                ];
+            }
+            case "editProfile": {
+                return [
                     check('name')
                         .exists()
                         .withMessage('name is required')
