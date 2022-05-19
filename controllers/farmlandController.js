@@ -113,7 +113,7 @@ module.exports = {
 
       if (!farmland) return res.status(404).send('Farmland not found');
 
-      await sickPlantModel.find({ farmland_id: farmlandId }).remove();
+      await sickPlantModel.deleteMany({ farmland_id: farmlandId });
 
       return res.status(200).json({ message: 'Farmland delete was successfully' });
     } catch (error) {
