@@ -20,10 +20,11 @@ const sickPlantSchema = new Schema({
     default: Date.now(),
   },
   picturedBy: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Users",
   }
 });
 
-const sickPlantModel = mongoose.model('sickPlants', sickPlantSchema);
+const sickPlantModel = mongoose.model('SickPlants', sickPlantSchema);
 
 module.exports = sickPlantModel;

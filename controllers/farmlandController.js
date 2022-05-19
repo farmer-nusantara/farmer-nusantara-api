@@ -28,7 +28,8 @@ module.exports = {
 
       if (!owner) return res.status(422).send('Mush have query owner');
 
-      const farmlands = await farmlandModel.find({ owner });
+      const farmlands = await farmlandModel.find({ owner })
+        .select({ _id: 1, farmName: 1, markColor: 1, plantType: 1, location: 1 });
 
       return res.status(200).json(farmlands);
     } catch (error) {
@@ -39,7 +40,9 @@ module.exports = {
     try {
       const { farmlandId } = req.params;
       
-      const farmland = await farmlandModel.findById(farmlandId);
+      const farmland = await farmlandModel.findById(farmlandId)
+        .populate({ path: "owner", select: { _id: 1, name: 1, email: 1 }})
+        .populate({ path: "sickPlants", select: { _id: 1, createdAt: 1, diseasePlant: 1, coordinate: 1 }});
       if (!farmland) return res.status(404).send('farmland not found');
 
       return res.status(200).json(farmland);

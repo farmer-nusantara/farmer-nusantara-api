@@ -70,8 +70,8 @@
         unique: true,
     },
     owner: {
-        type: String,
-        required: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Users"
     },
     markColor: {
         type: String,
@@ -106,4 +106,12 @@
     imageUrl: {
         type: String,
     },
+    createdAt: {
+        type: String,
+        default: Date.now(),
+    }
+    picturedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Users"
+    }
 }

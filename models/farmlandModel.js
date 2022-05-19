@@ -8,8 +8,8 @@ const farmlandSchema = new Schema({
     unique: true,
   },
   owner: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Users",
   },
   markColor: {
     type: String,
@@ -26,7 +26,14 @@ const farmlandSchema = new Schema({
   imageUrl: {
     type: String,
     default: null,
-  }
+  },
+  sickPlants: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SickPlants",
+      default: null,
+    }
+  ],
 })
 
 const farmlandModel = mongoose.model("Farmlands", farmlandSchema);

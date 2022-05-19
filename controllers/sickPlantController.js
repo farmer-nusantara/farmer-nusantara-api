@@ -1,4 +1,5 @@
 const sickPlantModel = require('../models/sickPlantModel');
+const farmlandModel = require('../models/farmlandModel');
 const { check } = require('express-validator');
 
 module.exports = {
@@ -14,6 +15,14 @@ module.exports = {
         picturedBy
       });
 
+      if (sickPlant) {
+        try {
+          await farmlandModel.updateOne({ _id: farmland_id }, { $push: { sickPlants: sickPlant._id } });
+        } catch (error) {
+          return res.status(400).json({ message: error.message });
+        }
+      }
+
       return res.status(201).json({ message: 'Save sick plant was successfully', data: sickPlant });
     } catch (error) {
       return res.status(400).json({ message: error.message });
@@ -23,7 +32,7 @@ module.exports = {
     try {
       const { sickPlantId } = req.params;
 
-      const plant = await sickPlantModel.findById(sickPlantId);
+      const plant = await sickPlantModel.findById(sickPlantId).populate('picturedBy');
 
       if (!plant) return res.status(404).json({ message: 'Sick plant not found' });
 
@@ -38,7 +47,7 @@ module.exports = {
 
       if (!farmland_id) return res.status(422).send('farmland id query is required');
 
-      const plants = await sickPlantModel.find({ farmland_id });
+      const plants = await sickPlantModel.find({ farmland_id }).select({ _id: 1, createdAt: 1, diseasePlant: 1, coordinate: 1 });
 
       if (!plants) return res.status(404).send("farmland_id not found");
 
@@ -49,10 +58,15 @@ module.exports = {
   },
   removeSickPlant: async (req, res, next) => {
     try {
-      const { sickPlantId } = req.params;
+      const { farmlandId } = req.params;
+      const { sickPlantId } = req.body;
 
+      
       const plant = await sickPlantModel.findByIdAndDelete(sickPlantId);
+
       if (!plant) return res.status(404).send('Sick plant not found');
+      
+      const farmland = await farmlandModel.updateOne({ _id: farmlandId }, { $pull: { sickPlants: sickPlantId } } );
 
       return res.status(200).json({ message: 'Delete Sick plant was successfully' });
     } catch (error) {
