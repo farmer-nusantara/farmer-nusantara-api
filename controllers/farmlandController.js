@@ -30,7 +30,7 @@ module.exports = {
       if (!owner) return res.status(422).send('Mush have query owner');
 
       const farmlands = await farmlandModel.find({ owner })
-        .select({ _id: 1, farmName: 1, markColor: 1, plantType: 1, location: 1 });
+        .select({ _id: 1, farmName: 1, markColor: 1, plantType: 1, location: 1 , imageUrl: 1 });
 
       return res.status(200).json(farmlands);
     } catch (error) {
