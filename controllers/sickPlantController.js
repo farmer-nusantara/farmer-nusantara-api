@@ -41,17 +41,26 @@ module.exports = {
       return res.status(400).json({ message: error.message });
     }
   },
-  getAllSickPlantsByFarmland: async (req, res, next) => {
+  getAllSickPlants: async (req, res, next) => {
     try {
-      const { farmland_id } = req.query;
-
-      if (!farmland_id) return res.status(422).send('farmland id query is required');
-
-      const plants = await sickPlantModel.find({ farmland_id }).select({ _id: 1, createdAt: 1, diseasePlant: 1, coordinate: 1 });
-
-      if (!plants) return res.status(404).send("farmland_id not found");
-
-      return res.status(200).json(plants);
+      const { farmland_id, owner } = req.query;
+      
+      if (!farmland_id && !owner) return res.status(422).json({ message: "Query not found" })
+      
+      let plants;
+      if (farmland_id && !owner) {
+        plants = await sickPlantModel.find({ farmland_id });
+        return res.status(200).json(plants);
+      } 
+      
+      if (owner && !farmland_id) {
+        plants = await sickPlantModel.find({ picturedBy: owner })
+          .populate({ path: "farmland_id", select: { farmName: 1, plantType: 1 } })
+          .populate({ path: "picturedBy", select: { name: 1, email: 1 } });
+        return res.status(200).json(plants);
+      }
+      
+      return res.status(200).json({ message: "Farmland not created yet"});
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
@@ -66,7 +75,7 @@ module.exports = {
 
       if (!plant) return res.status(404).send('Sick plant not found');
       
-      const farmland = await farmlandModel.updateOne({ _id: farmlandId }, { $pull: { sickPlants: sickPlantId } } );
+      await farmlandModel.updateOne({ _id: farmlandId }, { $pull: { sickPlants: sickPlantId } } );
 
       return res.status(200).json({ message: 'Delete Sick plant was successfully' });
     } catch (error) {
