@@ -6,8 +6,11 @@ const sickPlantSchema = new Schema({
     type: String,
     required: true,
   },
-  coordinate: {
-    type: String,
+  latitude: {
+    type: Number,
+  },
+  longitude: {
+    type: Number,
   },
   diseasePlant: {
     type: String,

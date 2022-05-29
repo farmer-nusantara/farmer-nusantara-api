@@ -5,11 +5,12 @@ const { check } = require('express-validator');
 module.exports = {
   createSickPlant: async (req, res, next) => {
     try {
-      const { farmland_id, coordinate, diseasePlant, imageUrl, picturedBy } = req.body;
+      const { farmland_id, diseasePlant, imageUrl, picturedBy, latitude, longitude } = req.body;
 
       const sickPlant = await sickPlantModel.create({
         farmland_id,
-        coordinate,
+        latitude,
+        longitude,
         diseasePlant,
         imageUrl,
         picturedBy
@@ -89,15 +90,18 @@ module.exports = {
           check('farmland_id')
             .exists()
             .withMessage('farmland_id is required'),
-          check('coordinate')
+          check('latitude')
             .exists()
-            .withMessage('coordinate is required'),
+            .withMessage('latitude is required'),
+          check('longitude')
+            .exists()
+            .withMessage('latitude is required'),
           check('diseasePlant')
             .exists()
-            .withMessage('coordinate is required'),
+            .withMessage('diseasePlant is required'),
           check('imageUrl')
             .exists()
-            .withMessage('coordinate is required'),
+            .withMessage('imageUrl is required'),
         ]
       }
     }
