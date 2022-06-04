@@ -3,8 +3,8 @@ const { Schema } = mongoose;
 
 const sickPlantSchema = new Schema({
   farmland_id: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Farmlands"
   },
   latitude: {
     type: Number,

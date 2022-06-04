@@ -42,8 +42,8 @@ module.exports = {
       const { farmlandId } = req.params;
       
       const farmland = await farmlandModel.findById(farmlandId)
-        .populate({ path: "owner", select: { _id: 1, name: 1, email: 1 }})
-        .populate({ path: "sickPlants", select: { _id: 1, createdAt: 1, diseasePlant: 1, coordinate: 1 }});
+        .populate("owner")
+        .populate("sickPlants");
       if (!farmland) return res.status(404).send('farmland not found');
 
       return res.status(200).json(farmland);

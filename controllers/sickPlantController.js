@@ -33,7 +33,9 @@ module.exports = {
     try {
       const { sickPlantId } = req.params;
 
-      const plant = await sickPlantModel.findById(sickPlantId).populate('picturedBy');
+      const plant = await sickPlantModel.findById(sickPlantId)
+        .populate({ path: "farmland_id", select: { sickPlants: 0 } })
+        .populate('picturedBy');
 
       if (!plant) return res.status(404).json({ message: 'Sick plant not found' });
 
@@ -50,14 +52,17 @@ module.exports = {
       
       let plants;
       if (farmland_id && !owner) {
-        plants = await sickPlantModel.find({ farmland_id });
+        console.log(farmland_id)
+        plants = await sickPlantModel.find({ farmland_id: farmland_id })
+          .populate({ path: "farmland_id", select: { sickPlants: 0 } })
+          .populate("picturedBy");
         return res.status(200).json(plants);
       } 
       
       if (owner && !farmland_id) {
         plants = await sickPlantModel.find({ picturedBy: owner })
-          .populate({ path: "farmland_id", select: { farmName: 1, plantType: 1 } })
-          .populate({ path: "picturedBy", select: { name: 1, email: 1 } });
+          .populate({ path: "farmland_id", select: { sickPlants: 0 } })
+          .populate("picturedBy");
         return res.status(200).json(plants);
       }
       
