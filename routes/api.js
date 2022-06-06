@@ -36,4 +36,9 @@ router.post('/model', auth, adminPanelController.validates('addModel'), adminPan
 router.put('/model/:id', auth, adminPanelController.validates('editModel'), adminPanelController.editModel);
 router.delete('/model/:id', auth, adminPanelController.deleteModel);
 
+router.get('/articles', auth, adminPanelController.getArticles);
+router.post('/articles', auth, adminPanelController.validates('addArticle'), adminPanelController.addArticle);
+router.put('/articles/:id', auth, adminPanelController.validates('addArticle'), adminPanelController.editArticle);
+router.delete('/articles/:id', auth, adminPanelController.deleteArticle);
+
 module.exports = router;
