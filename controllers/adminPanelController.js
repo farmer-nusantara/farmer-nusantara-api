@@ -1,5 +1,5 @@
 const { check } = require("express-validator");
-const { model, articleModel } = require("../models/adminPanelModel");
+const { model, articleModel, faqModel } = require("../models/adminPanelModel");
 const { uploadImage } = require("../utils/uploadImage");
 
 module.exports = {
@@ -89,6 +89,42 @@ module.exports = {
       return res.status(400).json({ message: error.message });
     }
   },
+  getFaqs: async (req, res) => {
+    try {
+      const data = await faqModel.find({});
+      return res.status(200).json(data);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+  addFaq: async (req, res) => {
+    try {
+      const { question, answer } = req.body;
+      await faqModel.create({ question, answer });
+      return res.status(201).json({ message: 'add FAQ was successfully' });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+  editFaq: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { question, answer } = req.body;
+      await faqModel.findByIdAndUpdate(id, { question, answer });
+      return res.status(201).json({ message: 'update FAQ was successfully' });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+  deleteFaq: async (req, res) => {
+    try {
+      const { id } = req.params;
+      await faqModel.findByIdAndRemove(id);
+      return res.status(200).json({ message: 'delete faq was successfully' });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
   validates: (method) => {
     switch (method) {
       case "addModel": {
@@ -117,6 +153,16 @@ module.exports = {
             .exists()
             .withMessage('imageUrl is required'),
         ];
+      }
+      case "addFaq": {
+        return [
+          check('question')
+            .exists()
+            .withMessage('question is required'),
+          check('answer')
+            .exists()
+            .withMessage('answer is required')
+        ]
       }
     }
   }
