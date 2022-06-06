@@ -1,5 +1,8 @@
 const { check } = require("express-validator");
 const { model, articleModel, faqModel } = require("../models/adminPanelModel");
+const farmlandModel = require("../models/farmlandModel");
+const sickPlantModel = require("../models/sickPlantModel");
+const { userModel } = require("../models/userModel");
 const { uploadImage } = require("../utils/uploadImage");
 
 module.exports = {
@@ -121,6 +124,23 @@ module.exports = {
       const { id } = req.params;
       await faqModel.findByIdAndRemove(id);
       return res.status(200).json({ message: 'delete faq was successfully' });
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+  getDashboardData: async (req, res) => {
+    try {
+      const users = await userModel.count({});
+      const farmlands = await farmlandModel.count({});
+      const sickPlants = await sickPlantModel.count({});
+      const deepLearningModel = await model.count({});
+
+      return res.status(200).json({
+        users,
+        farmlands,
+        sickPlants,
+        deepLearningModel,
+      })
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }

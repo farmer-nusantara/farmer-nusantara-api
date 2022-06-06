@@ -45,5 +45,6 @@ router.get('/faq', auth, adminPanelController.getFaqs);
 router.post('/faq', auth, adminPanelController.validates('addFaq'), adminPanelController.addFaq);
 router.put('/faq/:id', auth, adminPanelController.validates('addFaq'), adminPanelController.editFaq);
 router.post('/faq/:id', auth, adminPanelController.deleteFaq);
+router.get('/dashboard', auth, adminPanelController.getDashboardData);
 
 module.exports = router;
