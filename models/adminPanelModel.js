@@ -14,7 +14,7 @@ const articleSchema = new Schema({
     required: true,
   },
   content: {
-    type: Text,
+    type: String,
     required: true,
   },
   imageUrl: {
@@ -42,13 +42,13 @@ const faqSchema = new Schema({
     required: true,
   },
   answer: {
-    type: Text,
+    type: String,
     required: true,
   },
 })
 
-const model = mongoose.model('models', modelSchema);
-const articleModel = mongoose.model('articles', articleSchema);
-const faqModel = mongoose.model('models', faqSchema);
+const model = mongoose.model('ModelsDL', modelSchema);
+const articleModel = mongoose.model('Articles', articleSchema);
+const faqModel = mongoose.model('Models', faqSchema);
 
 module.exports = { model, articleModel, faqModel };

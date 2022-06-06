@@ -3,6 +3,7 @@ const farmlandController = require('../controllers/farmlandController');
 const sickPlantController = require('../controllers/sickPlantController');
 const auth = require('../middlewares/auth');
 const express = require('express');
+const adminPanelController = require('../controllers/adminPanelController');
 const router = express.Router();
 
 router.post('/auth/signup', userController.validates('signUp'), userController.signUp);
@@ -29,5 +30,10 @@ router.delete('/plants/:farmlandId', auth, sickPlantController.removeSickPlant);
 
 router.post('/file/uploads/:userId', auth, farmlandController.uploadImageToStorage);
 router.delete('/file/uploads', auth, farmlandController.removeImageFromStorage);
+
+router.get('/model', auth, adminPanelController.getModels);
+router.post('/model', auth, adminPanelController.validates('addModel'), adminPanelController.addModel);
+router.put('/model/:id', auth, adminPanelController.validates('editModel'), adminPanelController.editModel);
+router.delete('/model/:id', auth, adminPanelController.deleteModel);
 
 module.exports = router;
