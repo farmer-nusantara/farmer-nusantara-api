@@ -36,16 +36,16 @@ router.post('/model', auth, adminPanelController.validates('addModel'), adminPan
 router.put('/model/:id', auth, adminPanelController.validates('editModel'), adminPanelController.editModel);
 router.delete('/model/:id', auth, adminPanelController.deleteModel);
 
-router.get('/articles', auth, adminPanelController.getArticles);
-router.get('/articles/:id', auth, adminPanelController.getArticleById);
-router.post('/articles', auth, adminPanelController.validates('addArticle'), adminPanelController.addArticle);
-router.put('/articles/:id', auth, adminPanelController.validates('addArticle'), adminPanelController.editArticle);
-router.delete('/articles/:id', auth, adminPanelController.deleteArticle);
+router.get('/articles', adminPanelController.getArticles);
+router.get('/articles/:id', adminPanelController.getArticleById);
+router.post('/articles', adminPanelController.validates('addArticle'), adminPanelController.addArticle);
+router.put('/articles/:id', adminPanelController.validates('addArticle'), adminPanelController.editArticle);
+router.delete('/articles/:id', adminPanelController.deleteArticle);
 
-router.get('/faq', auth, adminPanelController.getFaqs);
-router.post('/faq', auth, adminPanelController.validates('addFaq'), adminPanelController.addFaq);
-router.put('/faq/:id', auth, adminPanelController.validates('addFaq'), adminPanelController.editFaq);
-router.post('/faq/:id', auth, adminPanelController.deleteFaq);
+router.get('/faq', adminPanelController.getFaqs);
+router.post('/faq', adminPanelController.validates('addFaq'), adminPanelController.addFaq);
+router.put('/faq/:id', adminPanelController.validates('addFaq'), adminPanelController.editFaq);
+router.post('/faq/:id', adminPanelController.deleteFaq);
 router.get('/dashboard', auth, adminPanelController.getDashboardData);
 
 module.exports = router;
