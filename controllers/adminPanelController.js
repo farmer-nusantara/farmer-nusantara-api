@@ -3,7 +3,6 @@ const { model, articleModel, faqModel } = require("../models/adminPanelModel");
 const farmlandModel = require("../models/farmlandModel");
 const sickPlantModel = require("../models/sickPlantModel");
 const { userModel } = require("../models/userModel");
-const { uploadImage } = require("../utils/uploadImage");
 
 module.exports = {
   getModels: async (req, res) => {
@@ -28,6 +27,7 @@ module.exports = {
       const { id } = req.params;
       const { plantName } = req.body;
       await model.findByIdAndUpdate(id, { plantName: plantName });
+      return res.status(200).json({ message: 'update dl model was successfully' })
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
@@ -36,6 +36,7 @@ module.exports = {
     try {
       const { id } = req.params;
       await model.findByIdAndRemove(id);
+      return res.status(200).json({ message: 'delete model was successfully' });
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
@@ -43,6 +44,15 @@ module.exports = {
   getArticles: async (req, res) => {
     try {
       const data = await articleModel.find({});
+      return res.status(200).json(data);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  },
+  getArticleById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = await articleModel.findById(id);
       return res.status(200).json(data);
     } catch (error) {
       return res.status(400).json({ message: error.message });

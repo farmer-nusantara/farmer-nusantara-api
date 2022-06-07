@@ -5,6 +5,7 @@ const modelSchema = new Schema({
   plantName: {
     type: String,
     required: true,
+    unique: true,
   },
 });
 
