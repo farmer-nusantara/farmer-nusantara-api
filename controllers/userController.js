@@ -128,7 +128,8 @@ module.exports = {
                 const token = jwt.sign({
                     user_id: user._id,
                     email,
-                }, process.env.TOKEN_SECRET, { expiresIn: "31d" })
+                    role: user.role,
+                }, process.env.TOKEN_SECRET, { expiresIn: user.role === "admin" ? "8hr" : "31d" })
 
                 return res.status(200).json({ user, token, message: "Login successfully" });
             }

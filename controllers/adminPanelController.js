@@ -6,6 +6,7 @@ const { userModel } = require("../models/userModel");
 
 module.exports = {
   getModels: async (req, res) => {
+    console.log(req.user);
     try {
       const data = await model.find({});
       return res.status(200).json(data);

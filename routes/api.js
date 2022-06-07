@@ -4,6 +4,7 @@ const sickPlantController = require('../controllers/sickPlantController');
 const auth = require('../middlewares/auth');
 const express = require('express');
 const adminPanelController = require('../controllers/adminPanelController');
+const adminAuthorization = require('../middlewares/adminAuth');
 const router = express.Router();
 
 router.post('/auth/signup', userController.validates('signUp'), userController.signUp);
@@ -32,21 +33,21 @@ router.post('/file/uploads/:userId', auth, farmlandController.uploadImageToStora
 router.delete('/file/uploads', auth, farmlandController.removeImageFromStorage);
 
 router.get('/model', auth, adminPanelController.getModels);
-router.post('/model', auth, adminPanelController.validates('addModel'), adminPanelController.addModel);
-router.put('/model/:id', auth, adminPanelController.validates('editModel'), adminPanelController.editModel);
-router.delete('/model/:id', auth, adminPanelController.deleteModel);
+router.post('/model', auth, adminAuthorization, adminPanelController.validates('addModel'), adminPanelController.addModel);
+router.put('/model/:id', auth, adminAuthorization, adminPanelController.validates('editModel'), adminPanelController.editModel);
+router.delete('/model/:id', auth, adminAuthorization, adminPanelController.deleteModel);
 
 router.get('/articles', adminPanelController.getArticles);
 router.get('/articles/:id', adminPanelController.getArticleById);
-router.post('/articles', auth, adminPanelController.validates('addArticle'), adminPanelController.addArticle);
-router.put('/articles/:id', auth, adminPanelController.validates('addArticle'), adminPanelController.editArticle);
-router.delete('/articles/:id', auth, adminPanelController.deleteArticle);
+router.post('/articles', auth, adminAuthorization, adminPanelController.validates('addArticle'), adminPanelController.addArticle);
+router.put('/articles/:id', auth, adminAuthorization, adminPanelController.validates('addArticle'), adminPanelController.editArticle);
+router.delete('/articles/:id', auth, adminAuthorization, adminPanelController.deleteArticle);
 
 router.get('/faq', adminPanelController.getFaqs);
-router.post('/faq', auth, adminPanelController.validates('addFaq'), adminPanelController.addFaq);
-router.put('/faq/:id', auth, adminPanelController.validates('addFaq'), adminPanelController.editFaq);
-router.delete('/faq/:id', auth, adminPanelController.deleteFaq);
+router.post('/faq', auth, adminAuthorization, adminPanelController.validates('addFaq'), adminPanelController.addFaq);
+router.put('/faq/:id', auth, adminAuthorization, adminPanelController.validates('addFaq'), adminPanelController.editFaq);
+router.delete('/faq/:id', auth, adminAuthorization, adminPanelController.deleteFaq);
 
-router.get('/dashboard', auth, adminPanelController.getDashboardData);
+router.get('/dashboard', auth, adminAuthorization, adminPanelController.getDashboardData);
 
 module.exports = router;

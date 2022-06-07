@@ -23,6 +23,11 @@ const userSchema = new Schema({
         type: String,
         enum: ['active', 'pending'],
         default: "pending",
+    },
+    role: {
+        type: String,
+        enum: ['basic', 'admin'],
+        default: 'basic',
     }
 });
 
