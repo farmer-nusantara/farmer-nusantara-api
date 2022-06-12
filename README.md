@@ -9,7 +9,6 @@ Build with:
 ## Features
 - [x] SignUp
 - [x] SignIn
-- [x] Verify Email
 - [x] CRUD Farmlands
 - [x] Add/Remove Image (Google Storage)
 - [x] Add/Remove sick plant data (MongoDB)
