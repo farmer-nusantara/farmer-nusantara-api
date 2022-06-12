@@ -15,7 +15,7 @@ Build with:
 - [x] Add/Remove sick plant data (MongoDB)
 
 ## Environment
-BaseUrl API: `https://prod-dot-farmer-nusantara-development.et.r.appspot.com`
+BaseUrl API: `https://farmer-nusantara-c22-ps004.et.r.appspot.com`
 >**Note**: Check the full API documentation here, [Farmer Nusantara - Postman documenter](https://documenter.getpostman.com/view/10712714/UyxnDjWp)
 
 ![farmer nusantara api](https://storage.googleapis.com/farmer-nusantara-storage/markdown_assets/farmer_nusantara_api.png)
